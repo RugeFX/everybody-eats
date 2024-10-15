@@ -28,6 +28,9 @@ Everybody Eats is an application designed to contribute to the achievement of th
 
 ### Built With
 
+* [![Typescript][Typescript]][Typescript-url]
+* [![Node][Node]][Node-url]
+* [![Hono][Hono]][Hono-url]
 * [![React][React.js]][React-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -49,3 +52,9 @@ Project Link: [https://github.com/RugeFX/everybody-eats](https://github.com/Ruge
 [stars-url]: https://github.com/RugeFX/everybody-eats/stargazers
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[Hono]: https://img.shields.io/badge/Hono-20232A?style=for-the-badge&logo=hono
+[Hono-url]: https://hono.dev/
+[Typescript]: https://img.shields.io/badge/Typescript-20232A?style=for-the-badge&logo=typescript
+[Typescript-url]: https://www.typescriptlang.org/
+[Node]: https://img.shields.io/badge/Node-20232A?style=for-the-badge&logo=node.js
+[Node-url]: https://nodejs.org/
