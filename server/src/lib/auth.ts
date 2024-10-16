@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { bearer } from "better-auth/plugins";
 import { db } from "../db";
 
-const auth = betterAuth({
+export const auth = betterAuth({
   database: {
     db,
     type: "postgres",
@@ -21,4 +21,3 @@ const auth = betterAuth({
 });
 
 export type Session = typeof auth.$Infer.Session;
-export default auth;

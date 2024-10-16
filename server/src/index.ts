@@ -6,10 +6,10 @@ import { cors } from "hono/cors";
 import { logger as honoLogger } from "hono/logger";
 import { showRoutes } from "hono/dev";
 import { logger } from "./lib/logger";
-import auth from "./lib/auth";
-import maps from "./routes/maps";
+import { auth } from "./lib/auth";
 import Context from "./lib/context";
 import authenticationMiddleware from "./middlewares/authentication";
+import maps from "./routes/maps";
 
 /**
  * Base server constants & configurations
