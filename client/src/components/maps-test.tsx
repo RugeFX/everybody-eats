@@ -62,17 +62,19 @@ function MapsTest() {
         </Popup>
       </Marker>
       <FeatureGroup>
-        {dataPosition?.map((mark, i) => (
+        {/* TODO: i am dumb 2 */}
+        {/* {dataPosition?.map((mark, i) => (
           <div key={i}>
             {mark.map((value) => (
               <Marker key={i} position={value} />
             ))}
           </div>
-        ))}
+        ))} */}
 
-        {dataPosition?.at(0)?[0] !== undefined && (
+        {/* TODO: i am dumb */}
+        {/* {dataPosition?.at(0)?[0] !== undefined && (
 
-        )}
+        )} */}
 
         {dataPosition?.map((value, i) => (
           <Polyline key={i} positions={value || []} color="red" />
