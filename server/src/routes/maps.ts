@@ -20,10 +20,10 @@ maps.get("/", async (c) => {
       },
       key: MAPS_API_KEY,
     },
-    timeout: 1000, // milliseconds
+    timeout: 1000,
   });
 
-  logger.info({ waypoints: directions.data.geocoded_waypoints, routes: directions.data.routes });
+  logger.info("DirectionsData: %o", directions.data);
 
   return c.json({ directions: directions.data });
 });

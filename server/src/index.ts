@@ -6,12 +6,10 @@ import { cors } from "hono/cors";
 import { logger as honoLogger } from "hono/logger";
 import { showRoutes } from "hono/dev";
 import { logger } from "./lib/logger";
-import { Client as MapsClient } from "@googlemaps/google-maps-services-js";
-import { auth } from "./lib/auth";
+import auth from "./lib/auth";
 import maps from "./routes/maps";
-
-// TODO: move this later
-interface Context {}
+import Context from "./lib/context";
+import authenticationMiddleware from "./middlewares/authentication";
 
 /**
  * Base server constants & configurations
@@ -26,7 +24,14 @@ const app = new Hono<Context>({ strict: false });
  * Register server middlewares & logger
  */
 app.use(honoLogger(logger.info));
-app.use("/api/*", cors());
+app.use(
+  "/api/*",
+  cors({
+    origin: "http://localhost:5173",
+    maxAge: 600,
+    credentials: true,
+  })
+);
 
 /**
  * Auth routes provided by BetterAuth
@@ -39,7 +44,13 @@ app.post("/api/auth/*", (c) => auth.handler(c.req.raw));
  */
 app.get("/api", (c) => {
   logger.info("Hit API");
-  return c.json({ Hello: "Hono!" });
+  return c.json({ hello: "world!" });
+});
+
+app.get("/api/auth-info", authenticationMiddleware, async (c) => {
+  const user = c.get("user")!;
+
+  return c.json({ userId: user.id });
 });
 
 app.route("/api/maps", maps);
