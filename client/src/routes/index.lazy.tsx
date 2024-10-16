@@ -1,8 +1,8 @@
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
-import { authClient } from "../lib/auth";
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../api";
+import { authClient } from "../lib/auth";
 import { useAuthStore } from "../lib/store";
+import { apiClient } from "../api";
 
 export const Route = createLazyFileRoute("/")({
         component: Index,
