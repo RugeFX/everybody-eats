@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AuthedIndexImport } from './routes/authed/index'
 
 // Create Virtual Routes
 
@@ -25,6 +26,11 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
+const AuthedIndexRoute = AuthedIndexImport.update({
+  path: '/authed/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -36,6 +42,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/authed/': {
+      id: '/authed/'
+      path: '/authed'
+      fullPath: '/authed'
+      preLoaderRoute: typeof AuthedIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -43,32 +56,37 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/authed': typeof AuthedIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/authed': typeof AuthedIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/authed/': typeof AuthedIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/authed'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/authed'
+  id: '__root__' | '/' | '/authed/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  AuthedIndexRoute: typeof AuthedIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  AuthedIndexRoute: AuthedIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -83,11 +101,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/authed/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/authed/": {
+      "filePath": "authed/index.tsx"
     }
   }
 }
