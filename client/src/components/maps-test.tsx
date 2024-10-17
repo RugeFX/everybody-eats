@@ -1,11 +1,11 @@
+import { useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { FeatureGroup, MapContainer, Marker, Polyline, Popup, TileLayer } from "react-leaflet";
+import axios from "axios";
+import L, { LatLngLiteral } from "leaflet";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
-import L, { LatLngLiteral } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useEffect, useMemo } from "react";
 
 const DefaultIcon = L.icon({
   iconUrl,
@@ -76,9 +76,7 @@ function MapsTest() {
 
         )} */}
 
-        {dataPosition?.map((value, i) => (
-          <Polyline key={i} positions={value || []} color="red" />
-        ))}
+        {dataPosition?.map((value, i) => <Polyline key={i} positions={value || []} color="red" />)}
       </FeatureGroup>
     </MapContainer>
   );

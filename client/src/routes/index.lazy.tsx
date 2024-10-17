@@ -3,75 +3,76 @@ import { useQuery } from "@tanstack/react-query";
 import { authClient } from "../lib/auth";
 import { useAuthStore } from "../lib/store";
 import { apiClient } from "../api";
+import Signup from "../components/auth/sign-up";
 
 export const Route = createLazyFileRoute("/")({
-        component: Index,
+  component: Index,
 });
 
 function Index() {
-        const { setToken } = useAuthStore();
+  const { setToken } = useAuthStore();
 
-        const { data, refetch } = useQuery({
-                queryKey: ["test"],
-                queryFn: async () => {
-                        const { data } = await apiClient.get("/auth-info");
-                        return data as { userId: string };
-                },
-                enabled: false,
-        });
+  const { data, refetch } = useQuery({
+    queryKey: ["info"],
+    queryFn: async () => {
+      const { data } = await apiClient.get<{ userId: string }>("/auth-info");
+      return data;
+    },
+    enabled: false,
+  });
 
-        const handleRegister = async () => {
-                const data = await authClient.signUp.email({
-                        email: "zacky@rugefx.com",
-                        password: "ahmadzacky123",
-                        name: "RugeFX",
-                });
+  const handleRegister = async (data: { email: string; name: string; password: string }) => {
+    const result = await authClient.signUp.email(data);
 
-                if (data.error) {
-                        console.error(data.error);
-                        return
-                }
+    if (result.error) {
+      console.error(result.error);
+      return;
+    }
 
-                setToken(data.data.session.id);
-        };
+    setToken(result.data.session.id);
+  };
 
-        const handleLogin = async () => {
-                const data = await authClient.signIn.email({
-                        email: "zacky@rugefx.com",
-                        password: "ahmadzacky123",
-                });
+  const handleLogin = async () => {
+    const data = await authClient.signIn.email({
+      email: "zacky@rugefx.com",
+      password: "ahmadzacky123",
+    });
 
-                if (data.error) {
-                        console.error(data.error);
-                        return;
-                }
+    if (data.error) {
+      console.error(data.error);
+      return;
+    }
 
-                setToken(data.data.session.id);
-        };
+    setToken(data.data.session.id);
+  };
 
-        const handleLogout = async () => {
-                await authClient.signOut();
+  const handleLogout = async () => {
+    await authClient.signOut();
 
-                setToken(null);
-        };
+    setToken(null);
+  };
 
-        return (
-                <main>
-                        <h1>Register here</h1>
-                        <button className="p-2 border-2 border-black" type="button" onClick={handleRegister}>
-                                Register
-                        </button>
-                        <button className="p-2 border-2 border-black" type="button" onClick={handleLogin}>
-                                Login
-                        </button>
-                        <button className="p-2 border-2 border-black" type="button" onClick={handleLogout}>
-                                Logout
-                        </button>
-                        <button className="p-2 border-2 border-black" onClick={() => refetch()}>
-                                Fetch userinfo
-                        </button>
-                        <Link to="/authed">Auth</Link>
-                        {data !== undefined && <pre>{JSON.stringify(data, null, 2)}</pre>}
-                </main>
-        );
+  return (
+    <main>
+      <h1>Register here</h1>
+      <Signup onSignup={handleRegister} />
+      <button className="p-2 border-2 border-black" type="button" onClick={handleLogin}>
+        Login
+      </button>
+      <button className="p-2 border-2 border-black" type="button" onClick={handleLogout}>
+        Logout
+      </button>
+      <button
+        className="p-2 border-2 border-black"
+        onClick={() => {
+          console.log("refetching...");
+          refetch();
+        }}
+      >
+        Fetch userinfo
+      </button>
+      <Link to="/authed">Auth</Link>
+      {data !== undefined && <pre>{JSON.stringify(data, null, 2)}</pre>}
+    </main>
+  );
 }
