@@ -1,21 +1,31 @@
 import { createMiddleware } from "hono/factory";
 import UnauthorizedException from "../exceptions/unauthorized-exception";
 import { auth } from "../lib/auth";
-import type Context from "../lib/context";
+import type { Context } from "../lib/context";
 
-const authenticationMiddleware = createMiddleware<Context>(async (c, next) => {
-        const session = await auth.api.getSession({ headers: c.req.raw.headers });
+interface NotNullAuthContext {
+  Variables: {
+    user: Exclude<Context["Variables"]["user"], null>;
+    session: Exclude<Context["Variables"]["session"], null>;
+  };
+}
 
-        if (!session) {
-                c.set("user", null);
-                c.set("session", null);
-                throw new UnauthorizedException({ message: "Unauthorized" });
-        }
+const authenticationMiddleware = createMiddleware<Context, string, object, NotNullAuthContext>(
+  async (c, next) => {
+    const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
-        c.set("user", session.user);
-        c.set("session", session.session);
+    if (!session) {
+      // TODO: nasty type workarounds, making sure the ctx's auth info is null
+      c.set("user", null as unknown as NotNullAuthContext["Variables"]["user"]);
+      c.set("session", null as unknown as NotNullAuthContext["Variables"]["session"]);
+      throw new UnauthorizedException("Unauthorized");
+    }
 
-        return next();
-});
+    c.set("user", session.user);
+    c.set("session", session.session);
+
+    return next();
+  }
+);
 
 export default authenticationMiddleware;

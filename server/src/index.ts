@@ -7,7 +7,7 @@ import { logger as honoLogger } from "hono/logger";
 import { showRoutes } from "hono/dev";
 import { logger } from "./lib/logger";
 import { auth } from "./lib/auth";
-import Context from "./lib/context";
+import type { Context } from "./lib/context";
 import authenticationMiddleware from "./middlewares/authentication";
 import maps from "./routes/maps";
 
@@ -48,7 +48,7 @@ app.get("/api", (c) => {
 });
 
 app.get("/api/auth-info", authenticationMiddleware, async (c) => {
-  const user = c.get("user")!;
+  const user = c.get("user");
 
   return c.json({ userId: user.id });
 });
