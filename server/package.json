@@ -2,22 +2,24 @@
   "name": "server",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "lint": "eslint src/**/*.{js,ts}"
+    "lint": "eslint src/**/*.{js,ts}",
+    "format": "@biomejs/biome format --write src/**/*"
   },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.4.0",
     "@hono/node-server": "^1.13.2",
-    "better-auth": "0.4.9-beta.11",
+    "better-auth": "0.5.1",
     "dotenv": "^16.4.5",
-    "hono": "^4.6.4",
+    "hono": "^4.6.5",
     "kysely": "^0.27.4",
     "pg": "^8.13.0",
     "winston": "^3.15.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@eslint/js": "^9.13.0",
     "@types/eslint__js": "^8.42.3",
-    "@types/node": "^20.16.11",
+    "@types/node": "^20.16.13",
     "@types/pg": "^8.11.10",
     "eslint": "^9.13.0",
     "tsx": "^4.19.1",

@@ -25,12 +25,12 @@ const app = new Hono<Context>({ strict: false });
  */
 app.use(honoLogger(logger.info));
 app.use(
-  "/api/*",
-  cors({
-    origin: "http://localhost:5173",
-    maxAge: 600,
-    credentials: true,
-  })
+	"/api/*",
+	cors({
+		origin: "http://localhost:5173",
+		maxAge: 600,
+		credentials: true,
+	}),
 );
 
 /**
@@ -43,14 +43,14 @@ app.post("/api/auth/*", (c) => auth.handler(c.req.raw));
  * Server application routes
  */
 app.get("/api", (c) => {
-  logger.info("Hit API");
-  return c.json({ hello: "world!" });
+	logger.info("Hit API");
+	return c.json({ hello: "world!" });
 });
 
 app.get("/api/auth-info", authenticationMiddleware, async (c) => {
-  const user = c.get("user");
+	const user = c.get("user");
 
-  return c.json({ userId: user.id });
+	return c.json({ userId: user.id });
 });
 
 app.route("/api/maps", maps);
@@ -59,14 +59,16 @@ app.route("/api/maps", maps);
  * Server initializations
  */
 showRoutes(app, {
-  colorize: true,
-  verbose: true,
+	colorize: true,
+	verbose: true,
 });
 
 serve({
-  fetch: app.fetch,
-  hostname: HOST,
-  port: PORT,
+	fetch: app.fetch,
+	hostname: HOST,
+	port: PORT,
 });
 
-logger.info(`Server is running on: ${SECURE ? "https" : "http"}://${HOST}:${PORT}`);
+logger.info(
+	`Server is running on: ${SECURE ? "https" : "http"}://${HOST}:${PORT}`,
+);

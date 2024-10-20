@@ -6,11 +6,11 @@ import type { Database } from "./types";
 export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 export const dialect = new PostgresDialect({
-        pool,
+	pool,
 });
 
 export const db = new Kysely<Database>({
-        dialect,
+	dialect,
 });
 
 logger.info("DB initialized");
