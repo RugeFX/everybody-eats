@@ -221,6 +221,16 @@
 					}
 				}
 			}
+		},
+		{
+			"include": ["src/db/migrations/*.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off"
+					}
+				}
+			}
 		}
 	]
 }

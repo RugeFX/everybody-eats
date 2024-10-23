@@ -1,5 +1,6 @@
 {
 	"name": "server",
+	"type": "module",
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
 		"lint": "biome lint src/**/*",
@@ -8,19 +9,18 @@
 	"dependencies": {
 		"@googlemaps/google-maps-services-js": "^3.4.0",
 		"@hono/node-server": "^1.13.2",
-		"better-auth": "0.5.1",
+		"better-auth": "0.5.2",
 		"dotenv": "^16.4.5",
-		"hono": "^4.6.5",
+		"hono": "^4.6.6",
 		"kysely": "^0.27.4",
 		"pg": "^8.13.0",
 		"winston": "^3.15.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@types/node": "^20.16.13",
+		"@types/node": "^20.16.14",
 		"@types/pg": "^8.11.10",
 		"tsx": "^4.19.1",
-		"typescript": "^5.6.3",
-		"typescript-eslint": "^8.10.0"
+		"typescript": "^5.6.3"
 	}
 }

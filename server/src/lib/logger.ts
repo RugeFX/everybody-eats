@@ -2,7 +2,7 @@ import winston from "winston";
 
 export const logger = winston.createLogger({
 	level: "info",
-	defaultMeta: { service: "astro" },
+	defaultMeta: { service: "everybody-eats" },
 	format: winston.format.combine(
 		winston.format.timestamp({
 			format: "YYYY-MM-DD HH:mm:ss",

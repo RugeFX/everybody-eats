@@ -9,7 +9,7 @@ import { logger } from "./lib/logger";
 import { auth } from "./lib/auth";
 import type { Context } from "./lib/context";
 import authenticationMiddleware from "./middlewares/authentication";
-import maps from "./routes/maps";
+import mapsRouter from "./routes/maps";
 
 /**
  * Base server constants & configurations
@@ -48,12 +48,12 @@ app.get("/api", (c) => {
 });
 
 app.get("/api/auth-info", authenticationMiddleware, async (c) => {
-	const user = c.get("user");
+	const { user } = c.var;
 
 	return c.json({ userId: user.id });
 });
 
-app.route("/api/maps", maps);
+app.route("/api/maps", mapsRouter);
 
 /**
  * Server initializations

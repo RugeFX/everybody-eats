@@ -1,9 +1,9 @@
 import { Kysely, PostgresDialect } from "kysely";
-import { Pool } from "pg";
+import pg from "pg";
 import { logger } from "../lib/logger";
 import type { Database } from "./types";
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+export const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 
 export const dialect = new PostgresDialect({
 	pool,
