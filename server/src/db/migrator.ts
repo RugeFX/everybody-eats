@@ -14,6 +14,11 @@ const migrator = new Migrator({
 });
 
 async function migrateToLatest() {
+	if (process.argv.slice(2).includes("fresh")) {
+		logger.info("Rolling back migrations...");
+		await migrator.migrateDown();
+	}
+
 	logger.info("Migrating to latest...");
 	const { error, results } = await migrator.migrateToLatest();
 

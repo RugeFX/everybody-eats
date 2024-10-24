@@ -1,7 +1,7 @@
 import { createMiddleware } from "hono/factory";
-import UnauthorizedException from "../exceptions/unauthorized-exception";
 import { auth } from "@/lib/auth";
 import type { ContextWithUser } from "@/types/context";
+import { HTTPException } from "hono/http-exception";
 
 const authenticationMiddleware = createMiddleware<ContextWithUser>(
 	async (c, next) => {
@@ -13,7 +13,7 @@ const authenticationMiddleware = createMiddleware<ContextWithUser>(
 			// biome-ignore lint/style/noNonNullAssertion: idk how to reason with the types
 			c.set("session", null!);
 
-			throw new UnauthorizedException("Unauthorized");
+			throw new HTTPException(401, { message: "Unauthorized" });
 		}
 
 		c.set("user", session.user);

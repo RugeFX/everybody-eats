@@ -6,11 +6,12 @@ export async function up(db: Kysely<any>) {
 		.createTable("restaurant")
 		.addColumn("id", "serial", (col) => col.primaryKey())
 		.addColumn("name", "varchar", (col) => col.notNull())
-		.addColumn("description", "text")
-		.addColumn("category", "varchar")
+		.addColumn("description", "text", (col) => col.notNull())
+		.addColumn("address", "text", (col) => col.notNull())
+		.addColumn("category", "varchar", (col) => col.notNull())
 		// TODO: change to geo points
-		.addColumn("lat", "decimal")
-		.addColumn("lng", "decimal")
+		.addColumn("lat", "decimal", (col) => col.notNull())
+		.addColumn("lng", "decimal", (col) => col.notNull())
 		.$call(addTimestamps)
 		.execute();
 }

@@ -21,6 +21,7 @@ export interface RestaurantTable {
 	name: string;
 	description: string;
 	category: string;
+	address: string;
 	lat: number;
 	lng: number;
 	created_at: ColumnType<Date, string | undefined, never>;
