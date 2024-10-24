@@ -1,6 +1,6 @@
 import { Client as MapsClient } from "@googlemaps/google-maps-services-js";
 import { Hono } from "hono";
-import { logger } from "../lib/logger";
+import { logger } from "@/lib/logger";
 
 const MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY || "";
 

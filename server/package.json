@@ -4,17 +4,19 @@
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
 		"lint": "biome lint src/**/*",
-		"format": "biome format --write src/**/*"
+		"format": "biome format --write src/**/*",
+		"db:migrate": "tsx src/db/migrator.ts"
 	},
 	"dependencies": {
+		"@dotenvx/dotenvx": "^1.20.1",
 		"@googlemaps/google-maps-services-js": "^3.4.0",
 		"@hono/node-server": "^1.13.2",
 		"better-auth": "0.5.2",
-		"dotenv": "^16.4.5",
 		"hono": "^4.6.6",
 		"kysely": "^0.27.4",
 		"pg": "^8.13.0",
-		"winston": "^3.15.0"
+		"winston": "^3.15.0",
+		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",

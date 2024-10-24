@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { bearer } from "better-auth/plugins";
-import { db } from "../db";
+import { db } from "@/db";
 
 export const auth = betterAuth({
 	database: {

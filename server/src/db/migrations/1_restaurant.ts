@@ -1,5 +1,5 @@
-import { Kysely, sql } from "kysely";
-import { addTimestamps } from "./helpers";
+import { Kysely } from "kysely";
+import { addTimestamps } from "../helpers";
 
 export async function up(db: Kysely<any>) {
 	await db.schema
