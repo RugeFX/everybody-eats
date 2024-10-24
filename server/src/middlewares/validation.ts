@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { z, ZodSchema } from "zod";
+import { ZodSchema } from "zod";
 
 const jsonValidator = <T>(schema: ZodSchema<T>) =>
 	zValidator("json", schema, (result) => {

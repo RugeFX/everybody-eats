@@ -6,14 +6,12 @@ import {
 	getRestaurantById,
 } from "@/repositories/restaurant-repository";
 import { ContextWithUser } from "@/types/context";
-import { zValidator } from "@hono/zod-validator";
-import { z, ZodError } from "zod";
-import { HTTPException } from "hono/http-exception";
-import { ValidationException } from "@/exceptions/validation-exception";
+import { z } from "zod";
 import jsonValidator from "@/middlewares/validation";
 
 const restaurant = new Hono<ContextWithUser>();
 
+// TODO: only disable authentication middleware for dev purposes
 // restaurant.use("/*", authenticationMiddleware);
 
 restaurant.get("/", async (c) => {
