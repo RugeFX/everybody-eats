@@ -1,3 +1,4 @@
+/* External dependencies imports */
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
@@ -6,10 +7,16 @@ import { showRoutes } from "hono/dev";
 import { HTTPException } from "hono/http-exception";
 import { ZodError } from "zod";
 import { NoResultError } from "kysely";
+
+/* Local libraries imports */
 import { logger } from "./lib/logger";
 import { auth } from "./lib/auth";
 import { env } from "./lib/env";
+
+/* Type imports */
 import type { Context } from "./types/context";
+
+/* Route imports */
 import mapsRoutes from "./routes/maps";
 import restaurantRoutes from "./routes/restaurant-routes";
 
@@ -35,10 +42,13 @@ app.use(
 );
 app.onError((err, c) => {
 	if (err instanceof HTTPException) {
+		/* Handle errors thrown from handlers */
 		return c.json({ message: err.message }, err.status);
 	} else if (err instanceof NoResultError) {
+		/* Handle errors thrown from the Kysely db instance when no result is found */
 		return c.json({ message: "Record not found" }, 404);
 	} else if (err instanceof ZodError) {
+		/* Handle errors thrown from the zod validator */
 		return c.json({
 			message: "Invalid request body",
 			errors: err.flatten().fieldErrors,
