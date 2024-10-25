@@ -16,6 +16,16 @@ const restaurant = new Hono<ContextWithUser>();
 // TODO: only disable authentication middleware for dev purposes
 // restaurant.use("/*", authenticationMiddleware);
 
+// TODO: move this somewhere else?
+const validationSchema = z.object({
+	name: z.string(),
+	description: z.string(),
+	address: z.string(),
+	category: z.string(),
+	lat: z.number(),
+	lng: z.number(),
+});
+
 restaurant.get("/", async (c) => {
 	const data = await getAllRestaurants();
 
@@ -29,44 +39,18 @@ restaurant.get("/:id", async (c) => {
 	return c.json({ data });
 });
 
-restaurant.post(
-	"/",
-	jsonValidator(
-		z.object({
-			name: z.string(),
-			description: z.string(),
-			address: z.string(),
-			category: z.string(),
-			lat: z.number(),
-			lng: z.number(),
-		}),
-	),
-	async (c) => {
-		const data = await createRestaurant(c.req.valid("json"));
+restaurant.post("/", jsonValidator(validationSchema), async (c) => {
+	const data = await createRestaurant(c.req.valid("json"));
 
-		return c.json({ message: "Restaurant details", data });
-	},
-);
+	return c.json({ message: "Restaurant details", data });
+});
 
-restaurant.put(
-	"/:id",
-	jsonValidator(
-		z.object({
-			name: z.string().optional(),
-			description: z.string().optional(),
-			address: z.string().optional(),
-			category: z.string().optional(),
-			lat: z.number().optional(),
-			lng: z.number().optional(),
-		}),
-	),
-	async (c) => {
-		const id = parseInt(c.req.param("id"));
-		const data = await updateRestaurant(id, c.req.valid("json"));
+restaurant.put("/:id", jsonValidator(validationSchema.partial()), async (c) => {
+	const id = parseInt(c.req.param("id"));
+	const data = await updateRestaurant(id, c.req.valid("json"));
 
-		return c.json({ message: "Successfully updated restaurant", data });
-	},
-);
+	return c.json({ message: "Successfully updated restaurant", data });
+});
 
 restaurant.delete("/:id", async (c) => {
 	const id = parseInt(c.req.param("id"));
