@@ -18,13 +18,13 @@ const envSchema = z.object({
 	BETTER_AUTH_URL: z.string().url().default("http://localhost:3000"),
 	BETTER_AUTH_TRUSTED_ORIGINS: z
 		.string()
-		.refine((value) =>
-			value
-				.split(",")
-				.every((origin) => z.string().url().safeParse(origin).success),
+		.refine(
+			(value) =>
+				value
+					.split(",")
+					.every((origin) => z.string().url().safeParse(origin).success),
+			{ message: "String must be a URL" },
 		),
 });
 
-const env = envSchema.parse(process.env);
-
-export default env;
+export const env = envSchema.parse(process.env);

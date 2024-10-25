@@ -3,15 +3,15 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger as honoLogger } from "hono/logger";
 import { showRoutes } from "hono/dev";
+import { HTTPException } from "hono/http-exception";
+import { ZodError } from "zod";
+import { NoResultError } from "kysely";
 import { logger } from "./lib/logger";
 import { auth } from "./lib/auth";
+import { env } from "./lib/env";
 import type { Context } from "./types/context";
 import mapsRoutes from "./routes/maps";
 import restaurantRoutes from "./routes/restaurant-routes";
-import env from "./lib/env";
-import { NoResultError } from "kysely";
-import { HTTPException } from "hono/http-exception";
-import { ZodError } from "zod";
 
 /**
  * Base server constants & configurations

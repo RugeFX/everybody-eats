@@ -1,13 +1,15 @@
 import { Hono } from "hono";
+import { z } from "zod";
 import authenticationMiddleware from "@/middlewares/authentication";
 import {
 	createRestaurant,
+	deleteRestaurant,
 	getAllRestaurants,
 	getRestaurantById,
+	updateRestaurant,
 } from "@/repositories/restaurant-repository";
-import { ContextWithUser } from "@/types/context";
-import { z } from "zod";
 import jsonValidator from "@/middlewares/validation";
+import type { ContextWithUser } from "@/types/context";
 
 const restaurant = new Hono<ContextWithUser>();
 
@@ -17,12 +19,12 @@ const restaurant = new Hono<ContextWithUser>();
 restaurant.get("/", async (c) => {
 	const data = await getAllRestaurants();
 
-	return c.json({ data });
+	return c.json({ message: "Restaurants list", data });
 });
 
 restaurant.get("/:id", async (c) => {
-	const id = c.req.param("id");
-	const data = await getRestaurantById(parseInt(id));
+	const id = parseInt(c.req.param("id"));
+	const data = await getRestaurantById(id);
 
 	return c.json({ data });
 });
@@ -42,8 +44,35 @@ restaurant.post(
 	async (c) => {
 		const data = await createRestaurant(c.req.valid("json"));
 
-		return c.json({ data });
+		return c.json({ message: "Restaurant details", data });
 	},
 );
+
+restaurant.put(
+	"/:id",
+	jsonValidator(
+		z.object({
+			name: z.string().optional(),
+			description: z.string().optional(),
+			address: z.string().optional(),
+			category: z.string().optional(),
+			lat: z.number().optional(),
+			lng: z.number().optional(),
+		}),
+	),
+	async (c) => {
+		const id = parseInt(c.req.param("id"));
+		const data = await updateRestaurant(id, c.req.valid("json"));
+
+		return c.json({ message: "Successfully updated restaurant", data });
+	},
+);
+
+restaurant.delete("/:id", async (c) => {
+	const id = parseInt(c.req.param("id"));
+	const data = await deleteRestaurant(id);
+
+	return c.json({ message: "Successfully deleted restaurant", data });
+});
 
 export default restaurant;
