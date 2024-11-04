@@ -1,7 +1,7 @@
 import { createMiddleware } from "hono/factory";
+import { HTTPException } from "hono/http-exception";
 import { auth } from "@/lib/auth";
 import type { ContextWithUser } from "@/types/context";
-import { HTTPException } from "hono/http-exception";
 
 const authenticationMiddleware = createMiddleware<ContextWithUser>(
 	async (c, next) => {

@@ -30,12 +30,14 @@ async function migrateToLatest() {
 		}
 	});
 
+	await db.destroy();
+
 	if (error) {
-		logger.error(`Failed to migrate: ${error}`);
-		process.exit(1);
+		logger.error("Failed to migrate: %o", error);
+		process.exitCode = 1;
+		return;
 	}
 
-	await db.destroy();
 	logger.info(`Migration complete, ${results?.length} migrations executed`);
 }
 

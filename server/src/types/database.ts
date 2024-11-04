@@ -18,12 +18,12 @@ export interface Database {
 /* Restaurant table type definitions */
 export interface RestaurantTable {
 	id: Generated<number>;
+	owner_id: string;
 	name: string;
 	description: string;
 	category: string;
 	address: string;
-	lat: number;
-	lng: number;
+	coordinates: string;
 	created_at: ColumnType<Date, string | undefined, never>;
 	updated_at: ColumnType<Date, string | undefined, never>;
 }

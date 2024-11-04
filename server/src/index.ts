@@ -54,6 +54,8 @@ app.onError((err, c) => {
 			errors: err.flatten().fieldErrors,
 		});
 	}
+	/* Handle unexpected errors */
+	logger.error("Unhandled error: %o", err);
 	return c.json({ message: err.message }, 500);
 });
 

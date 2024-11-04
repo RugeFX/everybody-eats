@@ -5,14 +5,15 @@
 		"dev": "tsx watch src/index.ts",
 		"lint": "biome lint src/**/*",
 		"format": "biome format --write src/**/*",
-		"db:migrate": "tsx src/db/migrator.ts"
+		"db:migrate": "tsx src/db/migrator.ts",
+		"db:types": "kysely-codegen --out-file src/types/db.d.ts --schema=public"
 	},
 	"dependencies": {
 		"@dotenvx/dotenvx": "^1.20.1",
 		"@googlemaps/google-maps-services-js": "^3.4.0",
 		"@hono/node-server": "^1.13.2",
 		"@hono/zod-validator": "^0.4.1",
-		"better-auth": "0.5.2",
+		"better-auth": "0.7.1",
 		"hono": "^4.6.6",
 		"kysely": "^0.27.4",
 		"pg": "^8.13.0",
@@ -23,6 +24,7 @@
 		"@biomejs/biome": "1.9.4",
 		"@types/node": "^20.16.14",
 		"@types/pg": "^8.11.10",
+		"kysely-codegen": "^0.17.0",
 		"tsx": "^4.19.1",
 		"typescript": "^5.6.3"
 	}
