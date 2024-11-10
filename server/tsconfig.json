@@ -12,7 +12,8 @@
 		"outDir": "dist",
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"noImplicitReturns": true
 	},
 	"include": ["./src/**/*"]
 }

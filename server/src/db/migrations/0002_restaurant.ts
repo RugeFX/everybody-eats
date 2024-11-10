@@ -6,9 +6,9 @@ export async function up(db: Kysely<any>) {
 		.createTable("restaurant")
 		.addColumn("id", "serial", (col) => col.primaryKey())
 		.addColumn("owner_id", "text", (col) =>
-			col.references("user.id").onDelete("cascade").notNull(),
+			col.references("account.id").onDelete("cascade").notNull(),
 		)
-		.addColumn("name", "varchar", (col) => col.notNull())
+		.addColumn("name", "varchar", (col) => col.unique().notNull())
 		.addColumn("description", "text", (col) => col.notNull())
 		.addColumn("address", "text", (col) => col.notNull())
 		.addColumn("category", "varchar", (col) => col.notNull())

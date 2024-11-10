@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 import authenticationMiddleware from "@/middlewares/authentication";
 import {
@@ -11,7 +12,6 @@ import {
 } from "@/repositories/restaurant-repository";
 import jsonValidator from "@/middlewares/validation";
 import type { ContextWithUser } from "@/types/context";
-import { HTTPException } from "hono/http-exception";
 
 const restaurant = new Hono<ContextWithUser>();
 
