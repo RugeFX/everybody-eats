@@ -13,10 +13,10 @@ import {
 import jsonValidator from "@/middlewares/validation";
 import type { ContextWithUser } from "@/types/context";
 
-const restaurant = new Hono<ContextWithUser>();
+const restaurantRoutes = new Hono<ContextWithUser>();
 
 // TODO: only disable authentication middleware for dev purposes
-restaurant.use("/*", authenticationMiddleware);
+restaurantRoutes.use("/*", authenticationMiddleware);
 
 // TODO: move this somewhere else?
 const validationSchema = z.object({
@@ -30,13 +30,13 @@ const validationSchema = z.object({
 	}),
 });
 
-restaurant.get("/", async (c) => {
+restaurantRoutes.get("/", async (c) => {
 	const data = await getAllRestaurants();
 
 	return c.json({ message: "Restaurants list", data });
 });
 
-restaurant.get("/:id", async (c) => {
+restaurantRoutes.get("/:id", async (c) => {
 	const id = parseInt(c.req.param("id"));
 
 	if (!id)
@@ -47,7 +47,7 @@ restaurant.get("/:id", async (c) => {
 	return c.json({ data });
 });
 
-restaurant.post("/", jsonValidator(validationSchema), async (c) => {
+restaurantRoutes.post("/", jsonValidator(validationSchema), async (c) => {
 	const data = await createRestaurant({
 		owner_id: c.var.user.id,
 		...c.req.valid("json"),
@@ -56,21 +56,25 @@ restaurant.post("/", jsonValidator(validationSchema), async (c) => {
 	return c.json({ message: "Restaurant details", data });
 });
 
-restaurant.put("/:id", jsonValidator(validationSchema.partial()), async (c) => {
-	const id = parseInt(c.req.param("id"));
+restaurantRoutes.put(
+	"/:id",
+	jsonValidator(validationSchema.partial()),
+	async (c) => {
+		const id = parseInt(c.req.param("id"));
 
-	if (!id)
-		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+		if (!id)
+			throw new HTTPException(404, { message: "Record not found, invalid ID" });
 
-	const check = await checkRestaurantOwner(id, c.var.user.id);
-	if (!check) throw new HTTPException(401, { message: "Unauthorized" });
+		const check = await checkRestaurantOwner(id, c.var.user.id);
+		if (!check) throw new HTTPException(401, { message: "Unauthorized" });
 
-	const data = await updateRestaurant(id, c.req.valid("json"));
+		const data = await updateRestaurant(id, c.req.valid("json"));
 
-	return c.json({ message: "Successfully updated restaurant", data });
-});
+		return c.json({ message: "Successfully updated restaurant", data });
+	},
+);
 
-restaurant.delete("/:id", async (c) => {
+restaurantRoutes.delete("/:id", async (c) => {
 	const id = parseInt(c.req.param("id"));
 
 	if (!id)
@@ -84,4 +88,4 @@ restaurant.delete("/:id", async (c) => {
 	return c.json({ message: "Successfully deleted restaurant", data });
 });
 
-export default restaurant;
+export default restaurantRoutes;

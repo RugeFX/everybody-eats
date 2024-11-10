@@ -10,7 +10,6 @@ import { NoResultError } from "kysely";
 
 /* Local libraries imports */
 import { logger } from "./lib/logger";
-import { auth } from "./lib/auth";
 import { env } from "./lib/env";
 
 /* Type imports */
@@ -19,6 +18,7 @@ import type { Context } from "./types/context";
 /* Route imports */
 import mapsRoutes from "./routes/maps";
 import restaurantRoutes from "./routes/restaurant-routes";
+import authenticationRoutes from "./routes/authentication-routes";
 
 /**
  * Base server constants & configurations
@@ -60,12 +60,6 @@ app.onError((err, c) => {
 });
 
 /**
- * Auth routes provided by BetterAuth
- */
-app.get("/api/auth/*", (c) => auth.handler(c.req.raw));
-app.post("/api/auth/*", (c) => auth.handler(c.req.raw));
-
-/**
  * Server application routes
  */
 app.get("/api", (c) => {
@@ -74,6 +68,7 @@ app.get("/api", (c) => {
 });
 app.route("/api/maps", mapsRoutes);
 app.route("/api/restaurants", restaurantRoutes);
+app.route("/api/auth", authenticationRoutes);
 
 /**
  * Server initializations

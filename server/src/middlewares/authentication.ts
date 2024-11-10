@@ -1,18 +1,29 @@
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
-import { auth } from "@/lib/auth";
+import { deleteCookie, getCookie } from "hono/cookie";
+import { validateSessionToken } from "@/lib/auth/session";
+import type { Context } from "hono";
 import type { ContextWithUser } from "@/types/context";
+
+function emptyAuthSession(c: Context) {
+	c.set("user", null);
+	c.set("session", null);
+}
 
 const authenticationMiddleware = createMiddleware<ContextWithUser>(
 	async (c, next) => {
-		const session = await auth.api.getSession({ headers: c.req.raw.headers });
+		const cookie = getCookie(c, "session");
+
+		if (!cookie) {
+			emptyAuthSession(c);
+			throw new HTTPException(401, { message: "Unauthorized" });
+		}
+
+		const session = await validateSessionToken(cookie);
 
 		if (!session) {
-			// biome-ignore lint/style/noNonNullAssertion: idk how to reason with the types
-			c.set("user", null!);
-			// biome-ignore lint/style/noNonNullAssertion: idk how to reason with the types
-			c.set("session", null!);
-
+			deleteCookie(c, "session");
+			emptyAuthSession(c);
 			throw new HTTPException(401, { message: "Unauthorized" });
 		}
 

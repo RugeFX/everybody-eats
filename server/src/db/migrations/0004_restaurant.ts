@@ -5,8 +5,8 @@ export async function up(db: Kysely<any>) {
 	await db.schema
 		.createTable("restaurant")
 		.addColumn("id", "serial", (col) => col.primaryKey())
-		.addColumn("owner_id", "text", (col) =>
-			col.references("account.id").onDelete("cascade").notNull(),
+		.addColumn("owner_id", "bigint", (col) =>
+			col.references("user.id").onDelete("cascade").notNull(),
 		)
 		.addColumn("name", "varchar", (col) => col.unique().notNull())
 		.addColumn("description", "text", (col) => col.notNull())

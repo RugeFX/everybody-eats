@@ -5,13 +5,10 @@ import type {
 	Selectable,
 	Updateable,
 } from "kysely";
-import type { Session } from "@/lib/auth";
 
 export interface Database {
-	/* Auth tables */
-	user: Session["user"];
-	session: Session["session"];
-	/* Main tables */
+	user: UserTable;
+	session: SessionTable;
 	restaurant: RestaurantTable;
 }
 
@@ -20,6 +17,24 @@ interface TableDefaults {
 	created_at: ColumnType<Date, string | undefined, never>;
 	updated_at: ColumnType<Date, string | undefined, never>;
 }
+
+/* Authentication table definitions */
+export interface SessionTable {
+	id: string;
+	user_id: number;
+	expires_at: Date;
+}
+
+export interface UserTable {
+	id: Generated<number>;
+	full_name: string;
+	username: string;
+	email: string;
+	password: string;
+}
+export type User = Selectable<UserTable>;
+export type NewUser = Insertable<UserTable>;
+export type UpdateUser = Updateable<UserTable>;
 
 /* Restaurant table type definitions */
 export interface RestaurantTable extends TableDefaults {
