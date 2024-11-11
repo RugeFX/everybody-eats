@@ -1,21 +1,30 @@
 import { db } from "@/db";
-import type { Database, User } from "@/types/database";
-import { SelectExpression } from "kysely";
+import type { User } from "@/types/database";
 
 export async function getAllUsers() {
-	const result = await db
-		.selectFrom("user")
-		.select(["id", "username"])
-		.execute();
+	const result = await db.selectFrom("user").selectAll().execute();
 
 	return result;
 }
 
-export async function getUserByUsername(username: User["username"]) {
+export async function getUserById(id: User["id"]) {
 	const result = await db
 		.selectFrom("user")
 		.selectAll()
-		.where("username", "=", username)
+		.where("id", "=", id)
+		.executeTakeFirstOrThrow();
+
+	return result;
+}
+
+export async function getUserByUniqueField(
+	field: "username" | "email",
+	value: string,
+) {
+	const result = await db
+		.selectFrom("user")
+		.selectAll()
+		.where(field, "=", value)
 		.executeTakeFirstOrThrow();
 
 	return result;

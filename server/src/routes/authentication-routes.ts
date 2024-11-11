@@ -3,7 +3,7 @@ import { z } from "zod";
 import jsonValidator from "@/middlewares/validation";
 import { type Context } from "@/types/context";
 import { createSession, generateSessionToken } from "@/lib/auth/session";
-import { getUserByUsername } from "@/repositories/user-repository";
+import { getUserByUniqueField } from "@/repositories/user-repository";
 import { randomBytes, scryptSync } from "crypto";
 import { db } from "@/db";
 import { HTTPException } from "hono/http-exception";
@@ -26,9 +26,9 @@ const hashPassword = (password: string) => {
 	return encryptPassword(password, salt) + salt;
 };
 
-const matchPassword = (password: string, hash: string) => {
-	const salt = hash.slice(64);
-	const originalHash = hash.slice(0, 64);
+const matchPassword = (password: string, hashedPassword: string) => {
+	const salt = hashedPassword.slice(64);
+	const originalHash = hashedPassword.slice(0, 64);
 	const currentHash = encryptPassword(password, salt);
 
 	return originalHash === currentHash;
@@ -37,7 +37,7 @@ const matchPassword = (password: string, hash: string) => {
 authenticationRoutes.post("/login", jsonValidator(loginSchema), async (c) => {
 	const { username, password } = c.req.valid("json");
 
-	const user = await getUserByUsername(username);
+	const user = await getUserByUniqueField("username", username);
 
 	const match = matchPassword(password, user.password);
 
