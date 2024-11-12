@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
-import { Migrator, FileMigrationProvider } from "kysely";
+import { Migrator, FileMigrationProvider, NO_MIGRATIONS } from "kysely";
 import { db } from ".";
 import { logger } from "@/lib/logger";
 
@@ -16,7 +16,8 @@ const migrator = new Migrator({
 async function migrateToLatest() {
 	if (process.argv.slice(2).includes("fresh")) {
 		logger.info("Rolling back migrations...");
-		await migrator.migrateDown();
+		const result = await migrator.migrateTo(NO_MIGRATIONS);
+		console.log(result);
 	}
 
 	logger.info("Migrating to latest...");

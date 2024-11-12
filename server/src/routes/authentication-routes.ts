@@ -62,6 +62,7 @@ authenticationRoutes.get("/sigma", async (c) => {
 			password: hashPassword("sigma123"),
 			email: "sigma@gmail.com",
 			full_name: "Sigma Sibiddy",
+			role: "admin",
 		})
 		.returningAll()
 		.executeTakeFirstOrThrow();

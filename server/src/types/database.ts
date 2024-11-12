@@ -27,10 +27,11 @@ export interface SessionTable {
 
 export interface UserTable {
 	id: Generated<number>;
-	full_name: string;
 	username: string;
+	full_name: string;
 	email: string;
 	password: string;
+	role: "admin" | "community_manager" | "restaurant_manager";
 }
 export type User = Selectable<UserTable>;
 export type NewUser = Insertable<UserTable>;

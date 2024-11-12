@@ -5,7 +5,7 @@ import { validateSessionToken } from "@/lib/auth/session";
 import type { Context } from "hono";
 import type { ContextWithUser } from "@/types/context";
 
-function emptyAuthSession(c: Context) {
+function emptyAuthContext(c: Context) {
 	c.set("user", null);
 	c.set("session", null);
 }
@@ -15,7 +15,7 @@ const authenticationMiddleware = createMiddleware<ContextWithUser>(
 		const cookie = getCookie(c, "session");
 
 		if (!cookie) {
-			emptyAuthSession(c);
+			emptyAuthContext(c);
 			throw new HTTPException(401, { message: "Unauthorized" });
 		}
 
@@ -23,7 +23,7 @@ const authenticationMiddleware = createMiddleware<ContextWithUser>(
 
 		if (!session) {
 			deleteCookie(c, "session");
-			emptyAuthSession(c);
+			emptyAuthContext(c);
 			throw new HTTPException(401, { message: "Unauthorized" });
 		}
 
