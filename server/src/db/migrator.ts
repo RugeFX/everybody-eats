@@ -17,7 +17,7 @@ async function migrateToLatest() {
 	if (process.argv.slice(2).includes("fresh")) {
 		logger.info("Rolling back migrations...");
 		const result = await migrator.migrateTo(NO_MIGRATIONS);
-		console.log(result);
+		logger.info("Rollback result: ", result);
 	}
 
 	logger.info("Migrating to latest...");
