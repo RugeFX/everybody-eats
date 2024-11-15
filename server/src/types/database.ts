@@ -24,6 +24,9 @@ export interface SessionTable {
 	user_id: number;
 	expires_at: Date;
 }
+export type Session = Selectable<SessionTable>;
+export type NewSession = Insertable<SessionTable>;
+export type UpdateSession = Updateable<SessionTable>;
 
 export interface UserTable {
 	id: Generated<number>;

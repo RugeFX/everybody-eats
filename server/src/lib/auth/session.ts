@@ -4,6 +4,7 @@ import {
 } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { db } from "@/db";
+import { User } from "@/types/database";
 
 export function generateSessionToken() {
 	const bytes = new Uint8Array(20);
@@ -34,8 +35,17 @@ export async function validateSessionToken(token: string) {
 
 	const session = await db
 		.selectFrom("session")
-		.selectAll()
 		.innerJoin("user", "user.id", "session.user_id")
+		.select([
+			"session.id",
+			"session.user_id",
+			"session.expires_at",
+			"user.username",
+			"user.password",
+			"user.email",
+			"user.full_name",
+			"user.role",
+		])
 		.where("session.id", "=", sessionId)
 		.executeTakeFirst();
 
@@ -43,8 +53,13 @@ export async function validateSessionToken(token: string) {
 		return null;
 	}
 
-	const user = {
+	const user: User = {
 		id: session.user_id,
+		username: session.username,
+		email: session.email,
+		full_name: session.full_name,
+		role: session.role,
+		password: session.password,
 	};
 
 	if (Date.now() >= session.expires_at.getTime()) {

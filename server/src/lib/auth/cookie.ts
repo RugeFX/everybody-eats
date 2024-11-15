@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { setCookie } from "hono/cookie";
+import { deleteCookie, setCookie } from "hono/cookie";
 import { env } from "../env";
 
 export function setSessionTokenCookie(
@@ -14,4 +14,8 @@ export function setSessionTokenCookie(
 		sameSite: "lax",
 		expires: expiresAt,
 	});
+}
+
+export function clearSessionTokenCookie(context: Context) {
+	deleteCookie(context, "session");
 }

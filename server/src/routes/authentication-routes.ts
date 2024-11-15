@@ -2,18 +2,34 @@ import { Hono } from "hono";
 import { z } from "zod";
 import jsonValidator from "@/middlewares/validation";
 import { type Context } from "@/types/context";
-import { createSession, generateSessionToken } from "@/lib/auth/session";
+import {
+	createSession,
+	generateSessionToken,
+	invalidateSession,
+} from "@/lib/auth/session";
 import { getUserByUniqueField } from "@/repositories/user-repository";
 import { randomBytes, scryptSync } from "crypto";
 import { db } from "@/db";
 import { HTTPException } from "hono/http-exception";
-import { setSessionTokenCookie } from "@/lib/auth/cookie";
+import {
+	clearSessionTokenCookie,
+	setSessionTokenCookie,
+} from "@/lib/auth/cookie";
+import authenticationMiddleware from "@/middlewares/authentication";
 
 const authenticationRoutes = new Hono<Context>();
 
 const loginSchema = z.object({
 	username: z.string().max(25).min(4),
 	password: z.string().min(8),
+});
+
+const registerSchema = z.object({
+	username: z.string().max(25).min(4),
+	password: z.string().min(8),
+	email: z.string().email(),
+	full_name: z.string(),
+	role: z.enum(["admin", "community_manager", "restaurant_manager"]).optional(),
 });
 
 // TODO: maybe refactor / move these helper functions later
@@ -68,6 +84,42 @@ authenticationRoutes.get("/sigma", async (c) => {
 		.executeTakeFirstOrThrow();
 
 	return c.json({ message: user });
+});
+
+authenticationRoutes.post(
+	"/register",
+	jsonValidator(registerSchema),
+	async (c) => {
+		const { username, password, email, full_name, role } = c.req.valid("json");
+
+		const user = await getUserByUniqueField("username", username);
+
+		if (user)
+			throw new HTTPException(400, { message: "Username already exists" });
+
+		const hashedPassword = hashPassword(password);
+
+		const newUser = await db
+			.insertInto("user")
+			.values({
+				username,
+				password: hashedPassword,
+				email,
+				full_name,
+				role: role ?? "community_manager",
+			})
+			.returningAll()
+			.executeTakeFirstOrThrow();
+
+		return c.json({ message: "Successfully registered user", data: newUser });
+	},
+);
+
+authenticationRoutes.post("/logout", authenticationMiddleware, async (c) => {
+	invalidateSession(c.var.session.id);
+	clearSessionTokenCookie(c);
+
+	return c.json({ message: "Successfully logged out" });
 });
 
 export default authenticationRoutes;

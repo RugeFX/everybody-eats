@@ -1,16 +1,17 @@
 import type { Env } from "hono";
-import type { Session } from "@/lib/auth";
+import type { Selectable } from "kysely";
+import type { User, Session } from "./database";
 
 export interface Context extends Env {
 	Variables: {
-		user: Session["user"] | null;
-		session: Session["session"] | null;
+		user: User | null;
+		session: Selectable<Session> | null;
 	};
 }
 
 export interface ContextWithUser extends Context {
 	Variables: {
-		user: Session["user"];
-		session: Session["session"];
+		user: User;
+		session: Selectable<Session>;
 	};
 }
