@@ -1,6 +1,6 @@
-import { db } from "@/db";
 import { sql } from "kysely";
-import { ST_X, ST_Y } from "@/lib/helpers/kysely";
+import { db } from "@/db/index.js";
+import { ST_X, ST_Y } from "@/lib/helpers/kysely.js";
 import type { ExpressionBuilder } from "kysely";
 import type { LatLngLiteral } from "@googlemaps/google-maps-services-js";
 import type {
@@ -8,7 +8,7 @@ import type {
 	NewRestaurant,
 	Restaurant,
 	UpdateRestaurant,
-} from "@/types/database";
+} from "@/types/database.js";
 
 function selectWithCoordinates(eb: ExpressionBuilder<Database, "restaurant">) {
 	return [

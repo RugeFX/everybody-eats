@@ -43,7 +43,7 @@ export type UpdateUser = Updateable<UserTable>;
 /* Restaurant table type definitions */
 export interface RestaurantTable extends TableDefaults {
 	id: Generated<number>;
-	owner_id: string;
+	owner_id: number;
 	name: string;
 	description: string;
 	category: string;

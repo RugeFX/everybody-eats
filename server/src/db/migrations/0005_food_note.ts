@@ -1,5 +1,5 @@
 import { type Kysely } from "kysely";
-import { addTimestamps } from "../helpers";
+import { addTimestamps } from "../helpers.js";
 
 export async function up(db: Kysely<any>) {
 	await db.schema

@@ -1,6 +1,6 @@
 import type { Env } from "hono";
 import type { Selectable } from "kysely";
-import type { User, Session } from "./database";
+import type { User, Session } from "./database.js";
 
 export interface Context extends Env {
 	Variables: {

@@ -9,16 +9,16 @@ import { ZodError } from "zod";
 import { NoResultError } from "kysely";
 
 /* Local libraries imports */
-import { logger } from "./lib/logger";
-import { env } from "./lib/env";
+import { logger } from "./lib/logger.js";
+import { env } from "./lib/env.js";
 
 /* Type imports */
-import type { Context } from "./types/context";
+import type { Context } from "./types/context.js";
 
 /* Route imports */
-import mapsRoutes from "./routes/maps";
-import restaurantRoutes from "./routes/restaurant-routes";
-import authenticationRoutes from "./routes/authentication-routes";
+import mapsRoutes from "./routes/maps.js";
+import restaurantRoutes from "./routes/restaurant-routes.js";
+import authenticationRoutes from "./routes/authentication-routes.js";
 
 /**
  * Base server constants & configurations

@@ -1,9 +1,9 @@
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { deleteCookie, getCookie } from "hono/cookie";
-import { validateSessionToken } from "@/lib/auth/session";
+import { validateSessionToken } from "@/lib/auth/session.js";
 import type { Context } from "hono";
-import type { ContextWithUser } from "@/types/context";
+import type { ContextWithUser } from "@/types/context.js";
 
 function emptyAuthContext(c: Context) {
 	c.set("user", null);

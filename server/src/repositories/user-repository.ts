@@ -1,5 +1,5 @@
-import { db } from "@/db";
-import type { User } from "@/types/database";
+import { db } from "@/db/index.js";
+import type { User } from "@/types/database.js";
 import type { Insertable, Updateable } from "kysely";
 
 export async function getAllUsers() {

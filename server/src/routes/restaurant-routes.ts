@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import authenticationMiddleware from "@/middlewares/authentication";
+import authenticationMiddleware from "@/middlewares/authentication.js";
 import {
 	checkRestaurantOwner,
 	createRestaurant,
@@ -9,9 +9,9 @@ import {
 	getAllRestaurants,
 	getRestaurantById,
 	updateRestaurant,
-} from "@/repositories/restaurant-repository";
-import jsonValidator from "@/middlewares/validation";
-import type { ContextWithUser } from "@/types/context";
+} from "@/repositories/restaurant-repository.js";
+import zodValidator from "@/middlewares/validation.js";
+import type { ContextWithUser } from "@/types/context.js";
 
 const restaurantRoutes = new Hono<ContextWithUser>();
 
@@ -47,7 +47,7 @@ restaurantRoutes.get("/:id", async (c) => {
 	return c.json({ data });
 });
 
-restaurantRoutes.post("/", jsonValidator(validationSchema), async (c) => {
+restaurantRoutes.post("/", zodValidator(validationSchema), async (c) => {
 	const data = await createRestaurant({
 		owner_id: c.var.user.id,
 		...c.req.valid("json"),
@@ -58,7 +58,7 @@ restaurantRoutes.post("/", jsonValidator(validationSchema), async (c) => {
 
 restaurantRoutes.put(
 	"/:id",
-	jsonValidator(validationSchema.partial()),
+	zodValidator(validationSchema.partial()),
 	async (c) => {
 		const id = parseInt(c.req.param("id"));
 

@@ -3,6 +3,9 @@
 	"type": "module",
 	"scripts": {
 		"dev": "tsx watch src/index.ts",
+		"build": "tsc",
+		"prepare": "ts-patch install -s",
+		"start": "node --experimental-specifier-resolution=node dist",
 		"lint": "biome lint src/**/*",
 		"format": "biome format --write src/**/*",
 		"db:migrate": "tsx src/db/migrator.ts",
@@ -26,7 +29,10 @@
 		"@types/node": "^20.16.14",
 		"@types/pg": "^8.11.10",
 		"kysely-codegen": "^0.17.0",
+		"ts-patch": "^3.2.1",
+		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.19.1",
-		"typescript": "^5.6.3"
+		"typescript": "^5.6.3",
+		"typescript-transform-paths": "^3.5.2"
 	}
 }

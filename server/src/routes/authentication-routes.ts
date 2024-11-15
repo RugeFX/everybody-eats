@@ -1,21 +1,21 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import jsonValidator from "@/middlewares/validation";
-import { type Context } from "@/types/context";
+import zodValidator from "@/middlewares/validation.js";
+import { type Context } from "@/types/context.js";
 import {
 	createSession,
 	generateSessionToken,
 	invalidateSession,
-} from "@/lib/auth/session";
-import { getUserByUniqueField } from "@/repositories/user-repository";
+} from "@/lib/auth/session.js";
+import { getUserByUniqueField } from "@/repositories/user-repository.js";
 import { randomBytes, scryptSync } from "crypto";
-import { db } from "@/db";
+import { db } from "@/db/index.js";
 import { HTTPException } from "hono/http-exception";
 import {
 	clearSessionTokenCookie,
 	setSessionTokenCookie,
-} from "@/lib/auth/cookie";
-import authenticationMiddleware from "@/middlewares/authentication";
+} from "@/lib/auth/cookie.js";
+import authenticationMiddleware from "@/middlewares/authentication.js";
 
 const authenticationRoutes = new Hono<Context>();
 
@@ -50,7 +50,7 @@ const matchPassword = (password: string, hashedPassword: string) => {
 	return originalHash === currentHash;
 };
 
-authenticationRoutes.post("/login", jsonValidator(loginSchema), async (c) => {
+authenticationRoutes.post("/login", zodValidator(loginSchema), async (c) => {
 	const { username, password } = c.req.valid("json");
 
 	const user = await getUserByUniqueField("username", username);
@@ -88,7 +88,7 @@ authenticationRoutes.get("/sigma", async (c) => {
 
 authenticationRoutes.post(
 	"/register",
-	jsonValidator(registerSchema),
+	zodValidator(registerSchema),
 	async (c) => {
 		const { username, password, email, full_name, role } = c.req.valid("json");
 

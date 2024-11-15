@@ -1,8 +1,8 @@
 import { Kysely, PostgresDialect } from "kysely";
 import pg from "pg";
-import { logger } from "@/lib/logger";
-import { env } from "@/lib/env";
-import type { Database } from "@/types/database";
+import { logger } from "@/lib/logger.js";
+import { env } from "@/lib/env.js";
+import type { Database } from "@/types/database.js";
 
 export const pool = new pg.Pool({ connectionString: env.DATABASE_URL });
 

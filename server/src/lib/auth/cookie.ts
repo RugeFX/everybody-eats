@@ -1,6 +1,6 @@
 import { Context } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
-import { env } from "../env";
+import { env } from "../env.js";
 
 export function setSessionTokenCookie(
 	context: Context,

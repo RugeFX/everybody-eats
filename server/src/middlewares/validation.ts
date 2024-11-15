@@ -1,9 +1,13 @@
 import { zValidator } from "@hono/zod-validator";
+import { ValidationTargets } from "hono";
 import { ZodSchema } from "zod";
 
-const jsonValidator = <T>(schema: ZodSchema<T>) =>
-	zValidator("json", schema, (result) => {
+const zodValidator = <T>(
+	schema: ZodSchema<T>,
+	target?: keyof ValidationTargets,
+) =>
+	zValidator(target ?? "json", schema, (result) => {
 		if (!result.success) throw result.error;
 	});
 
-export default jsonValidator;
+export default zodValidator;

@@ -1,19 +1,27 @@
 {
 	"compilerOptions": {
 		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
 		"strict": true,
 		"skipLibCheck": true,
 		"types": ["node"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
 		"allowJs": true,
-		"outDir": "dist",
+		"outDir": "./dist",
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"noImplicitReturns": true
+		"noImplicitReturns": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"plugins": [
+			{
+				"transform": "typescript-transform-paths"
+			}
+		]
 	},
-	"include": ["./src/**/*"]
+	"include": ["./src/**/*"],
+	"exclude": ["node_modules", "dist"]
 }
