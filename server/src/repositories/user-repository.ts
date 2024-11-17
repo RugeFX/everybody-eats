@@ -1,6 +1,5 @@
 import { db } from "@/db/index.js";
-import type { User } from "@/types/database.js";
-import type { Insertable, Updateable } from "kysely";
+import type { NewUser, UpdateUser, User } from "@/types/database.js";
 
 export async function getAllUsers() {
 	const result = await db.selectFrom("user").selectAll().execute();
@@ -31,7 +30,7 @@ export async function getUserByUniqueField(
 	return result;
 }
 
-export async function createUser(user: Insertable<User>) {
+export async function createUser(user: NewUser) {
 	const result = await db
 		.insertInto("user")
 		.values(user)
@@ -41,7 +40,7 @@ export async function createUser(user: Insertable<User>) {
 	return result;
 }
 
-export async function updateUserById(id: User["id"], user: Updateable<User>) {
+export async function updateUserById(id: User["id"], user: UpdateUser) {
 	const result = await db
 		.updateTable("user")
 		.set(user)

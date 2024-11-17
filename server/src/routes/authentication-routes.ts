@@ -7,7 +7,10 @@ import {
 	generateSessionToken,
 	invalidateSession,
 } from "@/lib/auth/session.js";
-import { getUserByUniqueField } from "@/repositories/user-repository.js";
+import {
+	createUser,
+	getUserByUniqueField,
+} from "@/repositories/user-repository.js";
 import { randomBytes, scryptSync } from "crypto";
 import { db } from "@/db/index.js";
 import { HTTPException } from "hono/http-exception";
@@ -24,13 +27,33 @@ const loginSchema = z.object({
 	password: z.string().min(8),
 });
 
-const registerSchema = z.object({
-	username: z.string().max(25).min(4),
-	password: z.string().min(8),
-	email: z.string().email(),
-	full_name: z.string(),
-	role: z.enum(["admin", "community_manager", "restaurant_manager"]).optional(),
-});
+const registerSchema = z
+	.object({
+		username: z.string().max(25).min(4),
+		password: z
+			.string()
+			.min(8)
+			.regex(
+				/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+				"Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character",
+			),
+		confirm_password: z.string().min(8),
+		email: z.string().email(),
+		full_name: z.string(),
+		role: z.enum(["community_manager", "restaurant_manager"]),
+	})
+	.refine((data) => data.password === data.confirm_password, {
+		message: "Passwords don't match",
+		path: ["confirm_password"],
+	})
+	.refine(
+		(data) =>
+			!data.password.toLowerCase().includes(data.username.toLowerCase()),
+		{
+			message: "Password must not be similar to the username",
+			path: ["password"],
+		},
+	);
 
 // TODO: maybe refactor / move these helper functions later
 const encryptPassword = (password: string, salt: string) => {
@@ -90,33 +113,19 @@ authenticationRoutes.post(
 	"/register",
 	zodValidator(registerSchema),
 	async (c) => {
-		const { username, password, email, full_name, role } = c.req.valid("json");
+		const { confirm_password: _, ...data } = c.req.valid("json");
 
-		const user = await getUserByUniqueField("username", username);
-
-		if (user)
-			throw new HTTPException(400, { message: "Username already exists" });
-
-		const hashedPassword = hashPassword(password);
-
-		const newUser = await db
-			.insertInto("user")
-			.values({
-				username,
-				password: hashedPassword,
-				email,
-				full_name,
-				role: role ?? "community_manager",
-			})
-			.returningAll()
-			.executeTakeFirstOrThrow();
+		const newUser = await createUser({
+			...data,
+			password: hashPassword(data.password),
+		});
 
 		return c.json({ message: "Successfully registered user", data: newUser });
 	},
 );
 
 authenticationRoutes.post("/logout", authenticationMiddleware, async (c) => {
-	invalidateSession(c.var.session.id);
+	await invalidateSession(c.var.session.id);
 	clearSessionTokenCookie(c);
 
 	return c.json({ message: "Successfully logged out" });

@@ -7,6 +7,7 @@ import { showRoutes } from "hono/dev";
 import { HTTPException } from "hono/http-exception";
 import { ZodError } from "zod";
 import { NoResultError } from "kysely";
+import pg from "pg";
 
 /* Local libraries imports */
 import { logger } from "./lib/logger.js";
@@ -53,9 +54,20 @@ app.onError((err, c) => {
 			message: "Invalid request body",
 			errors: err.flatten().fieldErrors,
 		});
-	}
+	} else if (err instanceof pg.DatabaseError && err.code === "23505")
+		return c.json(
+			{
+				message: `Value for unique field already exists: ${err.detail}`,
+				field: err.detail?.match(/\(([^)]+)\)/)?.[1] ?? "unknown",
+			},
+			400,
+		);
 	/* Handle unexpected errors */
-	logger.error("Unhandled error: %o", err);
+	logger.error(
+		'Unhandled error with constructor name "%s": %o',
+		err.constructor.name,
+		err,
+	);
 	return c.json({ message: err.message }, 500);
 });
 
