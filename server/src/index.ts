@@ -20,6 +20,7 @@ import type { Context } from "./types/context.js";
 import mapsRoutes from "./routes/maps.js";
 import restaurantRoutes from "./routes/restaurant-routes.js";
 import authenticationRoutes from "./routes/authentication-routes.js";
+import userRoutes from "./routes/user-routes.js";
 
 /**
  * Base server constants & configurations
@@ -78,9 +79,10 @@ app.get("/api", (c) => {
 	logger.info("Hit API");
 	return c.json({ hello: "world!" });
 });
+app.route("/api/auth", authenticationRoutes);
 app.route("/api/maps", mapsRoutes);
 app.route("/api/restaurants", restaurantRoutes);
-app.route("/api/auth", authenticationRoutes);
+app.route("/api/users", userRoutes);
 
 /**
  * Server initializations

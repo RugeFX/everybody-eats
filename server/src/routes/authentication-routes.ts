@@ -1,24 +1,23 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import zodValidator from "@/middlewares/validation.js";
-import { type Context } from "@/types/context.js";
+import { randomBytes, scryptSync } from "crypto";
+import { HTTPException } from "hono/http-exception";
 import {
 	createSession,
 	generateSessionToken,
 	invalidateSession,
 } from "@/lib/auth/session.js";
 import {
-	createUser,
-	getUserByUniqueField,
-} from "@/repositories/user-repository.js";
-import { randomBytes, scryptSync } from "crypto";
-import { db } from "@/db/index.js";
-import { HTTPException } from "hono/http-exception";
-import {
 	clearSessionTokenCookie,
 	setSessionTokenCookie,
 } from "@/lib/auth/cookie.js";
+import {
+	createUser,
+	getUserByUniqueField,
+} from "@/repositories/user-repository.js";
+import zodValidator from "@/middlewares/validation.js";
 import authenticationMiddleware from "@/middlewares/authentication.js";
+import type { Context } from "@/types/context.js";
 
 const authenticationRoutes = new Hono<Context>();
 
@@ -40,7 +39,7 @@ const registerSchema = z
 		confirm_password: z.string().min(8),
 		email: z.string().email(),
 		full_name: z.string(),
-		role: z.enum(["community_manager", "restaurant_manager"]),
+		role: z.enum(["community_manager", "restaurant_manager", "admin"]), // TODO: remove admin for production
 	})
 	.refine((data) => data.password === data.confirm_password, {
 		message: "Passwords don't match",
@@ -90,23 +89,6 @@ authenticationRoutes.post("/login", zodValidator(loginSchema), async (c) => {
 		message: "Successfully logged in",
 		data: { user: { ...user, password: undefined }, session },
 	});
-});
-
-// TODO: only for dev (i'm lazy)
-authenticationRoutes.get("/sigma", async (c) => {
-	const user = await db
-		.insertInto("user")
-		.values({
-			username: "sigma",
-			password: hashPassword("sigma123"),
-			email: "sigma@gmail.com",
-			full_name: "Sigma Sibiddy",
-			role: "admin",
-		})
-		.returningAll()
-		.executeTakeFirstOrThrow();
-
-	return c.json({ message: user });
 });
 
 authenticationRoutes.post(

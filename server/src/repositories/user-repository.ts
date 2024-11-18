@@ -60,3 +60,14 @@ export async function deleteUserById(id: User["id"]) {
 
 	return result;
 }
+
+export async function verifyUser(id: User["id"]) {
+	const result = await db
+		.updateTable("user")
+		.set({ is_verified: true })
+		.where("id", "=", id)
+		.returningAll()
+		.executeTakeFirstOrThrow();
+
+	return result;
+}

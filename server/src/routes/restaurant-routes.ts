@@ -15,7 +15,6 @@ import type { ContextWithUser } from "@/types/context.js";
 
 const restaurantRoutes = new Hono<ContextWithUser>();
 
-// TODO: only disable authentication middleware for dev purposes
 restaurantRoutes.use("/*", authenticationMiddleware);
 
 // TODO: move this somewhere else?
@@ -33,7 +32,7 @@ const validationSchema = z.object({
 restaurantRoutes.get("/", async (c) => {
 	const data = await getAllRestaurants();
 
-	return c.json({ message: "Restaurants list", data });
+	return c.json({ message: "Restaurant list", data });
 });
 
 restaurantRoutes.get("/:id", async (c) => {

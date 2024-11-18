@@ -28,13 +28,14 @@ export type Session = Selectable<SessionTable>;
 export type NewSession = Insertable<SessionTable>;
 export type UpdateSession = Updateable<SessionTable>;
 
-export interface UserTable {
+export interface UserTable extends TableDefaults {
 	id: Generated<number>;
 	username: string;
 	full_name: string;
 	email: string;
 	password: string;
 	role: "admin" | "community_manager" | "restaurant_manager";
+	is_verified: ColumnType<boolean, boolean | undefined>;
 }
 export type User = Selectable<UserTable>;
 export type NewUser = Insertable<UserTable>;
