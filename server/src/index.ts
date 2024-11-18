@@ -60,7 +60,7 @@ app.onError((err, c) => {
 				message: `Value for unique field already exists: ${err.detail}`,
 				field: err.detail?.match(/\(([^)]+)\)/)?.[1] ?? "unknown",
 			},
-			400,
+			409,
 		);
 	/* Handle unexpected errors */
 	logger.error(
