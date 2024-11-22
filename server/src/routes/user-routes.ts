@@ -1,18 +1,19 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
+import { z } from "zod";
 import {
+	deleteUserById,
 	getAllUsers,
 	getUserById,
 	updateUserById,
 	verifyUser,
 } from "@/repositories/user-repository.js";
-import type { Context } from "@/types/context.js";
 import authenticationMiddleware from "@/middlewares/authentication.js";
 import authorizationMiddleware from "@/middlewares/authorization.js";
 import zodValidator from "@/middlewares/validation.js";
-import { z } from "zod";
+import type { ContextWithUser } from "@/types/context.js";
 
-const userRoutes = new Hono<Context>();
+const userRoutes = new Hono<ContextWithUser>();
 
 const updateSchema = z.object({
 	full_name: z.string().optional(),
@@ -27,7 +28,6 @@ const updateSchema = z.object({
 		.optional(),
 });
 
-// TODO: idk if this logic is good or not
 userRoutes.use("/*", authenticationMiddleware);
 
 userRoutes.get("/", authorizationMiddleware(["admin"]), async (c) => {
@@ -62,10 +62,15 @@ userRoutes.patch("/:id", zodValidator(updateSchema), async (c) => {
 	if (!id)
 		throw new HTTPException(404, { message: "Record not found, invalid ID" });
 
+	const user = await getUserById(id);
+
+	if (user.id !== id || c.var.user.role !== "admin")
+		throw new HTTPException(403, { message: "Unauthorized" });
+
 	const data = await updateUserById(id, c.req.valid("json"));
 
 	return c.json({
-		message: "Successfully verified user",
+		message: "Successfully updated user",
 		data,
 	});
 });
@@ -79,7 +84,21 @@ userRoutes.patch("/verify/:id", async (c) => {
 	const data = await verifyUser(id);
 
 	return c.json({
-		message: "Successfully verified user",
+		message: "successfully verified user",
+		data,
+	});
+});
+
+userRoutes.delete("/:id", async (c) => {
+	const id = parseInt(c.req.param("id"));
+
+	if (!id)
+		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+
+	const data = await deleteUserById(id);
+
+	return c.json({
+		message: "successfully verified user",
 		data,
 	});
 });
