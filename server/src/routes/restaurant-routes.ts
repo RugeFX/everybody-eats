@@ -12,6 +12,7 @@ import {
 } from "@/repositories/restaurant-repository.js";
 import zodValidator from "@/middlewares/validation.js";
 import type { ContextWithUser } from "@/types/context.js";
+import { parseNumberId } from "@/lib/helpers/handler.js";
 
 const restaurantRoutes = new Hono<ContextWithUser>();
 
@@ -36,10 +37,7 @@ restaurantRoutes.get("/", async (c) => {
 });
 
 restaurantRoutes.get("/:id", async (c) => {
-	const id = parseInt(c.req.param("id"));
-
-	if (!id)
-		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+	const id = parseNumberId(c.req.param("id"));
 
 	const data = await getRestaurantById(id);
 
@@ -59,10 +57,7 @@ restaurantRoutes.put(
 	"/:id",
 	zodValidator(validationSchema.partial()),
 	async (c) => {
-		const id = parseInt(c.req.param("id"));
-
-		if (!id)
-			throw new HTTPException(404, { message: "Record not found, invalid ID" });
+		const id = parseNumberId(c.req.param("id"));
 
 		const check = await checkRestaurantOwner(id, c.var.user.id);
 		if (!check) throw new HTTPException(401, { message: "Unauthorized" });
@@ -74,10 +69,7 @@ restaurantRoutes.put(
 );
 
 restaurantRoutes.delete("/:id", async (c) => {
-	const id = parseInt(c.req.param("id"));
-
-	if (!id)
-		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+	const id = parseNumberId(c.req.param("id"));
 
 	const check = await checkRestaurantOwner(id, c.var.user.id);
 	if (!check) throw new HTTPException(401, { message: "Unauthorized" });

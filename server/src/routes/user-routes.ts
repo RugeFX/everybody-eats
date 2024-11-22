@@ -11,6 +11,7 @@ import {
 import authenticationMiddleware from "@/middlewares/authentication.js";
 import authorizationMiddleware from "@/middlewares/authorization.js";
 import zodValidator from "@/middlewares/validation.js";
+import { parseNumberId } from "@/lib/helpers/handler.js";
 import type { ContextWithUser } from "@/types/context.js";
 
 const userRoutes = new Hono<ContextWithUser>();
@@ -46,10 +47,7 @@ userRoutes.get("/", authorizationMiddleware(["admin"]), async (c) => {
 });
 
 userRoutes.get("/:id", async (c) => {
-	const id = parseInt(c.req.param("id"));
-
-	if (!id)
-		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+	const id = parseNumberId(c.req.param("id"));
 
 	const data = await getUserById(id);
 
@@ -57,10 +55,7 @@ userRoutes.get("/:id", async (c) => {
 });
 
 userRoutes.patch("/:id", zodValidator(updateSchema), async (c) => {
-	const id = parseInt(c.req.param("id"));
-
-	if (!id)
-		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+	const id = parseNumberId(c.req.param("id"));
 
 	const user = await getUserById(id);
 
@@ -76,10 +71,7 @@ userRoutes.patch("/:id", zodValidator(updateSchema), async (c) => {
 });
 
 userRoutes.patch("/verify/:id", async (c) => {
-	const id = parseInt(c.req.param("id"));
-
-	if (!id)
-		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+	const id = parseNumberId(c.req.param("id"));
 
 	const data = await verifyUser(id);
 
@@ -90,10 +82,7 @@ userRoutes.patch("/verify/:id", async (c) => {
 });
 
 userRoutes.delete("/:id", async (c) => {
-	const id = parseInt(c.req.param("id"));
-
-	if (!id)
-		throw new HTTPException(404, { message: "Record not found, invalid ID" });
+	const id = parseNumberId(c.req.param("id"));
 
 	const data = await deleteUserById(id);
 
