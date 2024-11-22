@@ -14,17 +14,6 @@ const envSchema = z.object({
 	DATABASE_URL: z.string().url(),
 	FRONTEND_URL: z.string().url().default("http://localhost:5173"),
 	GOOGLE_MAPS_API_KEY: z.string(),
-	BETTER_AUTH_SECRET: z.string(),
-	BETTER_AUTH_URL: z.string().url().default("http://localhost:3000"),
-	BETTER_AUTH_TRUSTED_ORIGINS: z
-		.string()
-		.refine(
-			(value) =>
-				value
-					.split(",")
-					.every((origin) => z.string().url().safeParse(origin).success),
-			{ message: "String must be a URL" },
-		),
 });
 
 export const env = envSchema.parse(process.env);
